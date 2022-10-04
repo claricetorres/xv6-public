@@ -7,6 +7,33 @@
 #include "mmu.h"
 #include "proc.h"
 
+int sys_trace(int)
+{
+  // Get the current process
+  struct proc *curproc = myproc();
+
+  // Get the new trace mask
+  int new_mask;
+
+  // Get the new trace mask from the stack
+  if (argint(0, &new_mask) < 0)
+  {
+    return -1;
+  }
+
+  // If the new trace mask is 0 then reset the syscall count
+  if (new_mask == 0)
+  {
+    curproc->syscallcount = 0;
+  }
+
+  // Set the new trace mask
+  curproc->syscalltrace = new_mask;
+
+  // Return sys calls count curproc->syscallcount
+  return curproc->syscallcount;
+}
+
 int
 sys_fork(void)
 {
